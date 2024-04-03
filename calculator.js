@@ -1,7 +1,7 @@
 let firstNum;
 let secondNum;
 let operator; 
-let display = '0';
+let display = "";
 
 const add = (a, b) => a + b;
 const subtract = (a, b) => a - b;
@@ -17,3 +17,18 @@ function operate() {
     : modulo(firstNum, secondNum);
 }
 
+const output = document.querySelector("#display");
+const numbers = document.querySelector(".numbers");
+const operators = document.querySelector(".right");
+numbers.addEventListener("click", (e) => {
+    display += e.target.value;
+    output.innerHTML = display;
+});
+
+operators.addEventListener("click", (e) => {
+    if(e.target.id === "clear") {
+        display = "";
+        output.innerHTML = "0";
+
+    }
+})
