@@ -1,13 +1,27 @@
-let firstNum = 0;
-let secondNum = 0;
+let firstNum = null;
+let secondNum = null;
 let operator = null; 
 let display = "";
+let currentResult = null;
 
 const add = (a, b) => a + b;
 const subtract = (a, b) => a - b;
 const multiply = (a, b) => a * b;
 const divide = (a, b) => a / b;
 const modulo = (a, b) => a % b;
+const power = (a, b) => {
+    let result = 1;
+    if (b === 0) {
+        return result;
+    }
+
+    for (let i = 0; i < b; i++) {
+        result *= a;
+    }
+
+    return result;
+}
+
 
 function operate() {
     return operator === '+' ? add(firstNum, secondNum) 
@@ -19,43 +33,83 @@ function operate() {
 
 const output = document.querySelector("#display");
 const numbers = document.querySelector(".numbers");
-const operators = document.querySelector(".right");
+const basicOperators = document.querySelector(".right");
+const altOperators = document.querySelector(".top");
+
 numbers.addEventListener("click", (e) => {
     if (display.length < 11 && e.target.id != "equals") {
         display += e.target.value;
         output.innerHTML = display;
     }
 
-    else if (e.target.id === "equals" && firstNum != 0 && operator != null) {
+    else if (e.target.id === "equals" && firstNum != null && operator != null) {
+        if (currentResult != null) {
+            firstNum = currentResult;
+        }
         secondNum = Number(display);
-        display = operate().toString();
+        currentResult = operate();
+        display = currentResult.toString();
         output.innerHTML = display;
-        console.log(firstNum);
-        console.log(secondNum);
-        console.log(operator);
-        console.log(display);
+        firstNum = null;
+        secondNum = null;
+        operator = null;
+        currentResult = null;
+
     }
 
 });
 
-operators.addEventListener("click", (e) => {
-    if(e.target.id === "clear") {
+basicOperators.addEventListener("click", (e) => {
+    
+        let operatorId = () => {
+            return e.target.id === "clear" ? 'AC' 
+            :e.target.id === "plus" ? '+' 
+            : e.target.id === "minus" ? '-'
+            : e.target.id === "multiply" ? '*'
+            : '/';
+        } 
+    if(operatorId() === "AC") {
         display = "";
-        firstNum = 0;
-        secondNum = 0;
+        firstNum = null;
+        secondNum = null;
+        currentResult = null;
         operator = null;
         output.innerHTML = "0";
     }
 
-    else if (e.target.id === "plus") {
-        operator = '+';
-        if (firstNum === 0) {
-            firstNum = Number(display);
-        } else { 
-            secondNum = Number(display);
+    else  {
+        if(operator === null) {
+            operator = operatorId();
         }
+        if (currentResult != null) {
+            firstNum = currentResult;
+        }
+        if (firstNum === null) {
+            firstNum = Number(display);
+        } else if (secondNum === null){ 
+            secondNum = Number(display);
+            currentResult = operate();
+            operator = operatorId();
+            display = currentResult.toString();
+            output.innerHTML = display;
+        } else {
+            firstNum = currentResult;
+            secondNum = Number(display);
+            currentResult = operate();
+            operator = operatorId();
+            display = currentResult.toString();
+            output.innerHTML = display;
+        }
+
         display = "";
         
     }
 
-})
+
+});
+
+altOperators.addEventListener("click", (e) => {
+    //create the event alternate operators event listeners
+    //When squared is clicked it squares the current value on display
+    //When exponent is clicked and takes the firstNum and multiplies it by secondNum times
+});   
